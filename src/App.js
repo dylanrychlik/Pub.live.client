@@ -1,6 +1,3 @@
-import React, { Component } from "react";
-import "./App.css";
-import Dialog from "@material-ui/core/Dialog";
 import Button from "@material-ui/core/Button";
 import Label from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
@@ -19,12 +16,14 @@ import { AppBar, Toolbar, Typography, Container } from "@material-ui/core";
 import axios from "axios";
 
   class App extends React.Component {
-   state = {
-    //email:' ',
-    //password : ' '
-  }
+    state = {
+           email:' ',
+           password : ' '
+         }
 constructor(props) {
         super(props);
+       this.postData = this.postData.bind(this)
+      
     }
 
 
@@ -48,16 +47,17 @@ constructor(props) {
 
     componentDidMount(){
      this.login();
+      // this.postData() == this.postData.bind(this);
 }
 
- async postData(url = '')  {
+ async postData()  {
   console.log('VICTORY 37!!!');
   // Default options are marked with *
-  const response = await fetch(url, {
+  const response = await fetch('http://localhost:8080/login', {
     method: 'POST', // *GET, POST, PUT, DELETE, etc.
 body: {
-    "Username": this.email.value,
-     "Password": this.password.value
+    "Username": 'dylanrychlik@gmail.com',
+     "Password": 'password'
    }
   });
   return response.json(); // parses JSON response into native JavaScript objects
@@ -65,7 +65,7 @@ body: {
    handleSubmit() {
   console.log('VICTORY 37!!!');
 
-this.postData('http://localhost:8080/login', data = { email: 'dylanrychlik@gmail.com',password: 'password' })
+this.postData()
   .then(data => {
     console.log(data); // JSON data parsed by `data.json()` call
   });
