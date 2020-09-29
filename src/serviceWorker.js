@@ -25,6 +25,7 @@ import axios from "axios";
   }
 constructor(props) {
         super(props);
+        this.postData = this.postData.bind(this);
     }
 
 
