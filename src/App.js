@@ -1,26 +1,143 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import "./App.css";
+import Dialog from "@material-ui/core/Dialog";
+import Button from "@material-ui/core/Button";
+import Label from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import TransformText from "./TransformText";
+import Link from '@material-ui/core/Link';
+import Popover from '@material-ui/core/Popover';
+//import * as Yup from 'yup';
+//import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import { makeStyles } from '@material-ui/core/styles';
+import { AppBar, Toolbar, Typography, Container } from "@material-ui/core";
+
+
+
+class App extends Component {
+  constructor(props){
+        super();
+        this.props = props;
+        this.companyFetcher = props.companyFetcher;
+        this.state = {
+            authenticated : null
+        }
+    }
+
+    handleSubmit = (e) =>{
+        e.preventDefault();
+        const data = new FormData(e.target);
+        this.companyFetcher.sendLoginData(this.stringifyFormData(data))
+        .then(result=>{
+            alert(result);
+            this.handleLoginStatus(result);
+        })
+        .catch(err=>{
+            console.log(err)
+        })
+    }
+
+    handleLoginStatus = (status) =>{
+        const {history} = this.props;
+        switch (status) {
+            case 200:
+                alert("OK")
+                this.props.authenticate();
+                history.push('/home/dashboard');
+                break;
+            case 401:
+                alert("AUTH FAIL")
+                this.setState({
+                    authenticated : false
+                })
+                break;
+            default:
+                alert("DEFAULT")
+                this.setState({
+                    authenticated : "ERR"
+                })
+                break;
+        }
+    }
+
+    stringifyFormData = (fd) => {
+        const data = {};
+          for (let key of fd.keys()) {
+            data[key] = fd.get(key);
+        }
+        return JSON.stringify(data, null, 2);
+      }
+
+ 
+  render() {
+    return (
+      <div className="App">
+      
+        <header className="App-header">
+         <Typography variant="h2" gutterBottom
+         style={{ color: "black" }}> Pubdata.live
+           </Typography>
+          <div className="Login" width="120px">
+         
+            <Label
+              variant="standard"
+              placeholder="Username"
+              margin="normal"
+              required
+              onChange={this.setUsername}
+              value={this.state.username}
+            />
+            <Typography variant="h2" gutterBottom
+         style={{ color: "black" }}> Sign in
+           </Typography>
+             <Typography variant="h6" gutterBottom
+         style={{ color: "black" }}> Username or email
+           </Typography>
+          
+            <TextField
+              variant="standard"
+              placeholder="Username"
+              margin="normal"
+              required
+              onChange={this.setUsername}
+              value={this.state.username}
+            /> 
+            <Typography variant="h6" gutterBottom
+         style={{ color: "black" }}>  Password
+         <Link href="#" onClick={console.log("SUCCESS!")}>
+           {'                   Forgot password?'}
+      </Link>
+           </Typography>
+            <TextField
+              variant="standard"
+              placeholder="Password"
+              margin="normal"
+              required
+              type="password"
+              onChange={this.setPassword}
+              value={this.state.password}
+            />
+
+            <div className="Button">
+             <Button style={{ background: "Orange",  borderstyle: "solid", color: "Black" }}>Sign-in</Button>
+            </div>
+
+
+
+            <div className="Button">
+             <Button style={{ background: "Silver", color: "Black" }}>New to Pubdata.live? Sign in here</Button>
+            </div>
+          </div>
+         
+        </header>
+      </div>
+    );
+  }
 }
 
 export default App;

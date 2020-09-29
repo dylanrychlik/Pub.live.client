@@ -1,141 +1,133 @@
-// This optional code is used to register a service worker.
-// register() is not called by default.
+import React, { Component } from "react";
+import "./App.css";
+import Dialog from "@material-ui/core/Dialog";
+import Button from "@material-ui/core/Button";
+import Label from "@material-ui/core/Button";
+import TextField from "@material-ui/core/TextField";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+//import TransformText from "./TransformText";
+import Link from '@material-ui/core/Link';
+import Popover from '@material-ui/core/Popover';
+//import * as Yup from 'yup';
+//import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 
-// This lets the app load faster on subsequent visits in production, and gives
-// it offline capabilities. However, it also means that developers (and users)
-// will only see deployed updates on subsequent visits to a page, after all the
-// existing tabs open on the page have been closed, since previously cached
-// resources are updated in the background.
+import { makeStyles } from '@material-ui/core/styles';
+import { AppBar, Toolbar, Typography, Container } from "@material-ui/core";
+import axios from "axios";
 
-// To learn more about the benefits of this model and instructions on how to
-// opt-in, read https://bit.ly/CRA-PWA
-
-const isLocalhost = Boolean(
-  window.location.hostname === 'localhost' ||
-    // [::1] is the IPv6 localhost address.
-    window.location.hostname === '[::1]' ||
-    // 127.0.0.0/8 are considered localhost for IPv4.
-    window.location.hostname.match(
-      /^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/
-    )
-);
-
-export function register(config) {
-  if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
-    // The URL constructor is available in all browsers that support SW.
-    const publicUrl = new URL(process.env.PUBLIC_URL, window.location.href);
-    if (publicUrl.origin !== window.location.origin) {
-      // Our service worker won't work if PUBLIC_URL is on a different origin
-      // from what our page is served on. This might happen if a CDN is used to
-      // serve assets; see https://github.com/facebook/create-react-app/issues/2374
-      return;
+  class App extends React.Component {
+   state = {
+    //email:' ',
+    //password : ' '
+  }
+constructor(props) {
+        super(props);
     }
 
-    window.addEventListener('load', () => {
-      const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
 
-      if (isLocalhost) {
-        // This is running on localhost. Let's check if a service worker still exists or not.
-        checkValidServiceWorker(swUrl, config);
+    async login() {
+      console.log('test');
 
-        // Add some additional logging to localhost, pointing developers to the
-        // service worker/PWA documentation.
-        navigator.serviceWorker.ready.then(() => {
-          console.log(
-            'This web app is being served cache-first by a service ' +
-              'worker. To learn more, visit https://bit.ly/CRA-PWA'
-          );
-        });
-      } else {
-        // Is not localhost. Just register service worker
-        registerValidSW(swUrl, config);
-      }
-    });
+ fetch('http://localhost:8080/')
+   .then(res => res.json())
+      .then(json => this.setState({ data: json }));
+    console.log('test 2');
+// const json = await response.json();
+  //console.log('json:',data);
+    //this.setState({ data: json });
+    // body data type must match "Content-Type" header
+   
+   
+  
+  
+ // return response.json(); // parses JSON response into native JavaScript objects */
+    } 
+
+    componentDidMount(){
+     this.login();
+}
+
+ async postData(url = '')  {
+  console.log('VICTORY 37!!!');
+  // Default options are marked with *
+  const response = await fetch(url, {
+    method: 'POST', // *GET, POST, PUT, DELETE, etc.
+body: {
+    "Username": this.email.value,
+     "Password": this.password.value
+   }
+  });
+  return response.json(); // parses JSON response into native JavaScript objects
   }
-}
+   handleSubmit() {
+  console.log('VICTORY 37!!!');
 
-function registerValidSW(swUrl, config) {
-  navigator.serviceWorker
-    .register(swUrl)
-    .then(registration => {
-      registration.onupdatefound = () => {
-        const installingWorker = registration.installing;
-        if (installingWorker == null) {
-          return;
-        }
-        installingWorker.onstatechange = () => {
-          if (installingWorker.state === 'installed') {
-            if (navigator.serviceWorker.controller) {
-              // At this point, the updated precached content has been fetched,
-              // but the previous service worker will still serve the older
-              // content until all client tabs are closed.
-              console.log(
-                'New content is available and will be used when all ' +
-                  'tabs for this page are closed. See https://bit.ly/CRA-PWA.'
-              );
+this.postData('http://localhost:8080/login', data = { email: 'dylanrychlik@gmail.com',password: 'password' })
+  .then(data => {
+    console.log(data); // JSON data parsed by `data.json()` call
+  });
+ }
+  render() {
+      return (
+      <div className="App">
+      
+        <header className="App-header">
+         <Typography variant="h2" gutterBottom
+         style={{ color: "black" }}> Pubdata.live
+           </Typography>
+          <div className="Login" width="120px">
+         
+           
+            <Typography variant="h2" gutterBottom
+         style={{ color: "black" }}> Sign in
+           </Typography>
+             <Typography variant="h6" gutterBottom
+         style={{ color: "black" }}> Username or email
+           </Typography>
+          
+            <TextField
+              variant="standard"
+              placeholder="Username"
+              margin="normal"
+              required
+              onChange={this.setUsername}
+              value={this.state.username}
+            /> 
+            <Typography variant="h6" gutterBottom
+         style={{ color: "black" }}>  Password
+         <Link href="#" onClick={console.log("SUCCESS!")}>
+           {'                   Forgot password?'}
+      </Link>
+           </Typography>
+            <TextField
+              variant="standard"
+              placeholder="Password"
+              margin="normal"
+              required
+              type="password"
+              onChange={this.setPassword}
+              value={this.state.password}
+            />
 
-              // Execute callback
-              if (config && config.onUpdate) {
-                config.onUpdate(registration);
-              }
-            } else {
-              // At this point, everything has been precached.
-              // It's the perfect time to display a
-              // "Content is cached for offline use." message.
-              console.log('Content is cached for offline use.');
+            <div className="Button">
+             <Button style={{ background: "Orange",  borderstyle: "solid", color: "Black" }}     onClick={this.handleSubmit} >Sign-in</Button>
+            </div>
 
-              // Execute callback
-              if (config && config.onSuccess) {
-                config.onSuccess(registration);
-              }
-            }
-          }
-        };
-      };
-    })
-    .catch(error => {
-      console.error('Error during service worker registration:', error);
-    });
-}
 
-function checkValidServiceWorker(swUrl, config) {
-  // Check if the service worker can be found. If it can't reload the page.
-  fetch(swUrl, {
-    headers: { 'Service-Worker': 'script' },
-  })
-    .then(response => {
-      // Ensure service worker exists, and that we really are getting a JS file.
-      const contentType = response.headers.get('content-type');
-      if (
-        response.status === 404 ||
-        (contentType != null && contentType.indexOf('javascript') === -1)
-      ) {
-        // No service worker found. Probably a different app. Reload the page.
-        navigator.serviceWorker.ready.then(registration => {
-          registration.unregister().then(() => {
-            window.location.reload();
-          });
-        });
-      } else {
-        // Service worker found. Proceed as normal.
-        registerValidSW(swUrl, config);
-      }
-    })
-    .catch(() => {
-      console.log(
-        'No internet connection found. App is running in offline mode.'
-      );
-    });
-}
 
-export function unregister() {
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.ready
-      .then(registration => {
-        registration.unregister();
-      })
-      .catch(error => {
-        console.error(error.message);
-      });
+            <div className="Button">
+             <Button style={{ background: "Silver", color: "Black" }}>New to Pubdata.live? Sign in here </Button>
+            </div>
+          </div>
+         
+        </header>
+      </div>
+    );
   }
-}
+
+  }
+
+export default App;
